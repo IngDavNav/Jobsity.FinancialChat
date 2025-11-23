@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+COPY . .
+
+RUN dotnet restore ./Jobsity.FinancialChat.Api/Jobsity.FinancialChat.Api.csproj
+
+RUN dotnet publish ./Jobsity.FinancialChat.Api/Jobsity.FinancialChat.Api.csproj \
+    -c Release -o /app/api
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+
+COPY --from=build /app/api ./
+
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+
+ENTRYPOINT ["dotnet", "Jobsity.FinancialChat.Api.dll"]

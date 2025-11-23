@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+COPY Jobsity.FinancialChat.Bot.Worker/Jobsity.FinancialChat.Bot.Worker.csproj Jobsity.FinancialChat.Bot.Worker/
+COPY Jobsity.FinancialChat.Application/Jobsity.FinancialChat.Application.csproj Jobsity.FinancialChat.Application/
+COPY Jobsity.FinancialChat.Domain/Jobsity.FinancialChat.Domain.csproj Jobsity.FinancialChat.Domain/
+COPY Jobsity.FinancialChat.Infrastructure/Jobsity.FinancialChat.Infrastructure.csproj Jobsity.FinancialChat.Infrastructure/
+
+RUN dotnet restore Jobsity.FinancialChat.Bot.Worker/Jobsity.FinancialChat.Bot.Worker.csproj
+
+COPY Jobsity.FinancialChat.Bot.Worker/ Jobsity.FinancialChat.Bot.Worker/
+COPY Jobsity.FinancialChat.Application/ Jobsity.FinancialChat.Application/
+COPY Jobsity.FinancialChat.Domain/ Jobsity.FinancialChat.Domain/
+COPY Jobsity.FinancialChat.Infrastructure/ Jobsity.FinancialChat.Infrastructure/
+
+RUN dotnet publish Jobsity.FinancialChat.Bot.Worker/Jobsity.FinancialChat.Bot.Worker.csproj \
+    -c Release -o /app/worker
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+
+COPY --from=build /app/worker ./
+
+ENTRYPOINT ["dotnet", "Jobsity.FinancialChat.Bot.Worker.dll"]

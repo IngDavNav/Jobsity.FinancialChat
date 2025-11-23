@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: jobsity-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: PassWord
+      MYSQL_USER: user123
+      MYSQL_PASSWORD: PassWord
+      MYSQL_DATABASE: financialchat
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: >
+      mysqld --default-authentication-plugin=mysql_native_password
+    networks:
+      - jobsity-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: jobsity-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - jobsity-net
+
+  api:
+    build:
+      context: ./financial-chat-server
+      dockerfile: dockerfile.api
+    container_name: jobsity-api
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always 
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__Default: "Server=db;Port=3306;Database=financialchat;User=user123;Password=PassWord"
+      Jwt__Key: "super-secret-key-de-mas-de-32-caracteres"
+      Jwt__Issuer: "jobsity-finchat"
+      Jwt__Audience: "jobsity-finchat-client"
+      RabbitMQ__HostName: "rabbitmq"
+      RabbitMQ__UserName: "guest"
+      RabbitMQ__Password: "guest"
+      RabbitMQ__QueueName: "stock-commands"
+      RabbitMQ__BotMessagesQueue: "bot-messages"
+    ports:
+      - "5000:8080"
+    networks:
+      - jobsity-net
+
+  worker:
+    build:
+      context: ./financial-chat-server
+      dockerfile: dockerfile.worker
+    container_name: jobsity-worker
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always 
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__Default: "Server=db;Port=3306;Database=financialchat;User=user123;Password=PassWord;SslMode=None;"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__UserName: "guest"
+      RabbitMq__Password: "guest"
+      RabbitMq__QueueName: "stock-commands"
+      RabbitMq__BotMessagesQueue: "bot-messages"
+    networks:
+      - jobsity-net
+
+  web:
+    build:
+      context: ./financial-chat-web
+    container_name: jobsity-web
+    depends_on:
+      - api
+    environment:
+      VITE_API_BASE_URL: "http://api:8080"
+    ports:
+      - "3000:80"
+    networks:
+      - jobsity-net
+
+volumes:
+  mysql-data:
+
+networks:
+  jobsity-net:
+    driver: bridge

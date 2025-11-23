@@ -1,0 +1,52 @@
+# -----------------------------
+# Visual Studio / VS Code Cache
+# -----------------------------
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# -----------------------------
+# Build outputs
+# -----------------------------
+bin/
+obj/
+**/bin/
+**/obj/
+
+# -----------------------------
+# Docker
+# -----------------------------
+docker-data/
+mysql-data/
+
+# -----------------------------
+# Node (your Vite front)
+# -----------------------------
+financial-chat-web/node_modules/
+financial-chat-web/dist/
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+
+# -----------------------------
+# Publish outputs
+# -----------------------------
+publish/
+out/
+
+# -----------------------------
+# Environment files
+# -----------------------------
+*.env
+financial-chat-web/.env
+financial-chat-server/.env
+
+# -----------------------------
+# IDE folders
+# -----------------------------
+.idea/
+.vscode/
