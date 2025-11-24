@@ -253,6 +253,7 @@ The stock bot is hosted in a dedicated Worker Service instead of being embedded 
 **David Navarro**
 Software Engineer – Backend & Cloud Architecture
 LinkedIn: https://www.linkedin.com/in/david-navarro-web-developer/
+
 ---
 
 ## License
