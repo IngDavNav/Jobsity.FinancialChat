@@ -22,7 +22,7 @@ docker-data/
 mysql-data/
 
 # -----------------------------
-# Node (your Vite front)
+# Node
 # -----------------------------
 financial-chat-web/node_modules/
 financial-chat-web/dist/

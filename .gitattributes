@@ -1,0 +1,55 @@
+# ============================
+# Text normalization / EOL
+# ============================
+
+# Normalize all text files to LF in the repo.  
+# Each OS will convert to its native EOL on checkout.
+* text=auto eol=lf
+
+# Windows scripts should keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# ============================
+# Programming languages
+# ============================
+
+# C# / .NET
+*.cs       text diff=csharp
+*.csproj   text
+*.sln      text
+*.props    text
+*.targets  text
+
+# Frontend (Vite / React)
+*.ts       text
+*.tsx      text
+*.js       text
+*.jsx      text
+*.css      text
+*.scss     text
+*.html     text
+
+# Configuration / Infrastructure
+*.json     text
+*.yml      text
+*.yaml     text
+*.xml      text
+*.config   text
+Dockerfile* text
+docker-compose.yml text
+
+# ============================
+# Binary files
+# ============================
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+
+*.dll   binary
+*.exe   binary
+*.pdb   binary
